@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Foundry generated and vendored files
+contracts/lib/
+contracts/cache/
+contracts/out/
+contracts/broadcast/

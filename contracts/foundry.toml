@@ -2,6 +2,7 @@
 src = "src"
 out = "out"
 libs = ["lib"]
+solc_version = "0.8.28"
 cbor_metadata = true
 bytecode_hash = "none" # Disable IPFS metadata hash
 use_literal_content = true # use source code

@@ -6,10 +6,12 @@ import {
   CircleAlert,
   CircleCheck,
   Copy,
+  Plus,
   RefreshCw,
   ShieldCheck,
   WalletCards,
 } from "lucide-react";
+import Link from "next/link";
 import { toast } from "sonner";
 import { getAddress, type Address } from "viem";
 import { useBalance, useBytecode, useConnection } from "wagmi";
@@ -234,6 +236,19 @@ export function WalletDashboard() {
           </div>
         </dl>
 
+        {walletAddress && (
+          <div className="dashboard-create-action">
+            <div>
+              <strong>Ready to lend an item?</strong>
+              <p>Create the owner, borrower, arbiter, deposit, and deadline record onchain.</p>
+            </div>
+            <Link className="button button-primary" href="/create">
+              <Plus aria-hidden="true" size={17} />
+              Create agreement
+            </Link>
+          </div>
+        )}
+
         {(state === "rpc-error" || state === "contract-unavailable") && (
           <div className="inline-alert" role="alert">
             <CircleAlert aria-hidden="true" size={19} />
@@ -308,8 +323,8 @@ export function WalletDashboard() {
           <ArrowUpRight aria-hidden="true" size={16} />
         </a>
         <p className="slip-note">
-          Phase 1 is read-only. Agreement creation and contract transactions are
-          intentionally not available yet.
+          Agreement creation is available as an explicit owner transaction.
+          Funding and later lifecycle actions are not included in Phase 2.
         </p>
       </aside>
     </div>

@@ -12,12 +12,27 @@ ReturnBond records the loan roles and deadlines in a smart contract. The borrowe
 
 ## Current architecture
 
-- A Next.js App Router frontend provides the public landing page and authenticated dashboard.
+- A Next.js App Router frontend provides the public landing page, authenticated dashboard, create-agreement form, and live agreement detail route.
 - Privy handles Google, X, and external EVM wallet authentication. Social-login users without a linked wallet receive an embedded EVM wallet.
 - Privy's Wagmi integration provides the active wallet connection to Wagmi and Viem.
 - TanStack Query manages live RPC query state.
 - The Solidity contract stores agreement state and escrows native MON deposits.
 - Application blockchain data comes directly from the deployed contract and the configured Monad Testnet RPC. The application does not substitute mock data when live reads fail.
+
+## Phase 2: create an agreement
+
+An authenticated owner with an active EVM wallet can open `/create` and record a new agreement on Monad Testnet. The form validates the item metadata URI, distinct owner/borrower/arbiter addresses, positive MON deposit, future deadlines, and positive inspection and claim-response periods. Local date and time inputs are converted to Unix seconds, and the MON value is converted to wei without floating-point arithmetic.
+
+The transaction flow is entirely live:
+
+1. The client validates the form and requires Monad Testnet (chain ID `10143`).
+2. The configured ReturnBond contract call is simulated with the connected owner address.
+3. The connected Privy/Wagmi wallet asks the owner to confirm the real `createAgreement` transaction.
+4. The app displays the submitted transaction hash and waits for a successful receipt.
+5. It decodes `AgreementCreated` from that receipt and navigates using the emitted agreement ID.
+6. `/agreements/[agreementId]` reads `getAgreement` directly from the deployed contract and displays only the returned onchain data.
+
+Success is never inferred from `totalAgreementCount`, and the app does not substitute a mock agreement when an RPC or contract read fails.
 
 ## Technology stack
 
@@ -80,8 +95,8 @@ forge test -vvv
 forge test --gas-report
 ```
 
-## Phase 1 limitations
+## Current limitations
 
-Phase 1 provides application configuration, Monad Testnet connectivity, Privy authentication, active-wallet state, native MON balance reads, and deployed-contract availability checks. It does not yet include agreement discovery, agreement creation, contract write actions, notifications, a backend, a database, or an indexer.
+Phase 2 implements agreement creation and live, read-only agreement details only. Metadata upload is not included, so owners must provide a real accessible HTTPS, HTTP, or IPFS URI. Deposit funding, handover, return, claims, disputes, settlement, and all other agreement lifecycle actions are not implemented in the application yet.
 
-The dashboard is intentionally read-only. Signing in does not send an onchain transaction.
+There is no backend, database, or indexer. Signing in does not send an onchain transaction; only an explicit, simulated create-agreement confirmation can submit a write.

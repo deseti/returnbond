@@ -17,6 +17,7 @@ import { getAddress, type Address } from "viem";
 import { useBalance, useBytecode, useConnection } from "wagmi";
 import { monadTestnet } from "@/config/monad-testnet";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { AgreementDiscovery } from "@/features/agreements/agreement-discovery";
 import { returnBondContract } from "@/lib/web3/contract";
 import { formatAddress, formatMonBalance } from "@/lib/web3/format";
 
@@ -158,6 +159,7 @@ export function WalletDashboard() {
   };
 
   return (
+    <div className="dashboard-content">
     <div className="dashboard-grid">
       <section className="wallet-panel" aria-labelledby="wallet-title">
         <div className="panel-heading">
@@ -323,10 +325,12 @@ export function WalletDashboard() {
           <ArrowUpRight aria-hidden="true" size={16} />
         </a>
         <p className="slip-note">
-          Agreement creation is available as an explicit owner transaction.
-          Funding and later lifecycle actions are not included in Phase 2.
+          Phase 3 adds live role-based discovery, borrower funding, owner handover
+          confirmation, and failed-handover refunds.
         </p>
       </aside>
+    </div>
+      <AgreementDiscovery />
     </div>
   );
 }

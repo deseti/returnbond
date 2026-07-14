@@ -14,6 +14,7 @@ import { formatEther } from "viem";
 import { useConnection, useReadContract, useSwitchChain } from "wagmi";
 import { monadTestnet } from "@/config/monad-testnet";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { AgreementLifecycleActions } from "@/features/agreements/agreement-lifecycle-actions";
 import {
   getAgreementStatusLabel,
   getSafeMetadataLink,
@@ -168,7 +169,13 @@ function RoleRow({ label, address }: { label: string; address: `0x${string}` }) 
   );
 }
 
-function AgreementRecord({ agreement }: { agreement: OnchainAgreement }) {
+function AgreementRecord({
+  agreement,
+  onAgreementChanged,
+}: {
+  agreement: OnchainAgreement;
+  onAgreementChanged: () => Promise<void>;
+}) {
   const metadataLink = getSafeMetadataLink(agreement.itemMetadataURI);
   const status = getAgreementStatusLabel(agreement.status);
   const statusTone = agreement.status === 0 ? "neutral" : agreement.status >= 6 ? "warning" : "positive";
@@ -236,6 +243,10 @@ function AgreementRecord({ agreement }: { agreement: OnchainAgreement }) {
             <dd>{formatPeriod(agreement.claimResponsePeriod)}</dd>
           </div>
         </dl>
+        <AgreementLifecycleActions
+          agreement={agreement}
+          onAgreementChanged={onAgreementChanged}
+        />
       </article>
 
       <aside className="roles-slip" aria-labelledby="roles-title">
@@ -246,7 +257,7 @@ function AgreementRecord({ agreement }: { agreement: OnchainAgreement }) {
           <RoleRow label="Borrower" address={agreement.borrower} />
           <RoleRow label="Arbiter" address={agreement.arbiter} />
         </dl>
-        <p className="receipt-note">This Phase 2 page is read-only. It contains no funding or lifecycle actions.</p>
+        <p className="receipt-note">Eligible Phase 3 actions appear only for the connected owner or borrower and are checked against live contract state.</p>
       </aside>
     </div>
   );
@@ -342,7 +353,12 @@ export function AgreementDetail({ agreementId: rawAgreementId }: { agreementId: 
       <Link className="detail-back-link" href="/dashboard">
         <ArrowLeft aria-hidden="true" size={16} />Dashboard
       </Link>
-      <AgreementRecord agreement={normalizeAgreement(agreementQuery.data)} />
+      <AgreementRecord
+        agreement={normalizeAgreement(agreementQuery.data)}
+        onAgreementChanged={async () => {
+          await agreementQuery.refetch();
+        }}
+      />
     </main>
   );
 }

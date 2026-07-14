@@ -51,6 +51,27 @@ export const returnBondAbi = [
   },
   {
     type: "function",
+    name: "fundAgreement",
+    stateMutability: "payable",
+    inputs: [{ name: "agreementId", type: "uint256" }],
+    outputs: [],
+  },
+  {
+    type: "function",
+    name: "confirmHandover",
+    stateMutability: "nonpayable",
+    inputs: [{ name: "agreementId", type: "uint256" }],
+    outputs: [],
+  },
+  {
+    type: "function",
+    name: "refundUnhandedAgreement",
+    stateMutability: "nonpayable",
+    inputs: [{ name: "agreementId", type: "uint256" }],
+    outputs: [],
+  },
+  {
+    type: "function",
     name: "getOwnerAgreementIds",
     stateMutability: "view",
     inputs: [{ name: "owner", type: "address" }],
@@ -90,6 +111,38 @@ export const returnBondAbi = [
     ],
   },
   {
+    type: "event",
+    name: "AgreementFunded",
+    anonymous: false,
+    inputs: [
+      { name: "agreementId", type: "uint256", indexed: true },
+      { name: "borrower", type: "address", indexed: true },
+      { name: "amount", type: "uint256", indexed: false },
+      { name: "fundingTimestamp", type: "uint64", indexed: false },
+    ],
+  },
+  {
+    type: "event",
+    name: "HandoverConfirmed",
+    anonymous: false,
+    inputs: [
+      { name: "agreementId", type: "uint256", indexed: true },
+      { name: "owner", type: "address", indexed: true },
+      { name: "handoverTimestamp", type: "uint64", indexed: false },
+    ],
+  },
+  {
+    type: "event",
+    name: "AgreementCancelled",
+    anonymous: false,
+    inputs: [
+      { name: "agreementId", type: "uint256", indexed: true },
+      { name: "owner", type: "address", indexed: true },
+      { name: "actor", type: "address", indexed: true },
+      { name: "depositRefunded", type: "bool", indexed: false },
+    ],
+  },
+  {
     type: "error",
     name: "AgreementNotFound",
     inputs: [{ name: "agreementId", type: "uint256" }],
@@ -103,5 +156,53 @@ export const returnBondAbi = [
   { type: "error", name: "ZeroClaimResponsePeriod", inputs: [] },
   { type: "error", name: "EmptyItemName", inputs: [] },
   { type: "error", name: "EmptyMetadataURI", inputs: [] },
+  {
+    type: "error",
+    name: "Unauthorized",
+    inputs: [
+      { name: "agreementId", type: "uint256" },
+      { name: "caller", type: "address" },
+    ],
+  },
+  {
+    type: "error",
+    name: "InvalidStatus",
+    inputs: [
+      { name: "agreementId", type: "uint256" },
+      { name: "expected", type: "uint8" },
+      { name: "actual", type: "uint8" },
+    ],
+  },
+  {
+    type: "error",
+    name: "IncorrectDeposit",
+    inputs: [
+      { name: "expected", type: "uint256" },
+      { name: "received", type: "uint256" },
+    ],
+  },
+  {
+    type: "error",
+    name: "DeadlineExpired",
+    inputs: [
+      { name: "agreementId", type: "uint256" },
+      { name: "deadline", type: "uint256" },
+    ],
+  },
+  {
+    type: "error",
+    name: "DeadlineNotReached",
+    inputs: [
+      { name: "agreementId", type: "uint256" },
+      { name: "deadline", type: "uint256" },
+    ],
+  },
+  {
+    type: "error",
+    name: "NativeTransferFailed",
+    inputs: [
+      { name: "recipient", type: "address" },
+      { name: "amount", type: "uint256" },
+    ],
+  },
 ] as const;
-

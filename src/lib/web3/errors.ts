@@ -8,6 +8,12 @@ const RETURNBOND_ERROR_MESSAGES: Record<string, string> = {
   ZeroClaimResponsePeriod: "The claim response period must be greater than zero.",
   EmptyItemName: "Enter an item name.",
   EmptyMetadataURI: "Enter a metadata URI.",
+  Unauthorized: "The connected wallet is not authorized for this agreement action.",
+  InvalidStatus: "The agreement state changed and this action is no longer available.",
+  IncorrectDeposit: "The transaction value must exactly match the recorded deposit.",
+  DeadlineExpired: "The handover deadline has already been reached.",
+  DeadlineNotReached: "The handover deadline has not been reached yet.",
+  NativeTransferFailed: "The contract could not return the deposit to the borrower wallet.",
 };
 
 function errorText(error: unknown): string {

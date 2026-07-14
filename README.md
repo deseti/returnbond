@@ -19,9 +19,19 @@ ReturnBond records the loan roles and deadlines in a smart contract. The borrowe
 - The Solidity contract stores agreement state and escrows native MON deposits.
 - Application blockchain data comes directly from the deployed contract and the configured Monad Testnet RPC. The application does not substitute mock data when live reads fail.
 
-## Phase 2: create an agreement
+## Phase 3: agreement discovery and funding
 
-An authenticated owner with an active EVM wallet can open `/create` and record a new agreement on Monad Testnet. The form validates the item metadata URI, distinct owner/borrower/arbiter addresses, positive MON deposit, future deadlines, and positive inspection and claim-response periods. Local date and time inputs are converted to Unix seconds, and the MON value is converted to wei without floating-point arithmetic.
+An authenticated user with a synchronized Privy/Wagmi EVM wallet can discover their real agreements on `/dashboard`. The app reads the deployed contract's owner, borrower, and arbiter ID lists for the canonical wallet, merges duplicate IDs while preserving every role, and loads the corresponding agreement records directly from Monad Testnet. It does not scan `totalAgreementCount`, use an indexer, or substitute static data when RPC reads fail.
+
+The live agreement detail route now exposes only the Phase 3 action authorized by contract role, status, network, and chain-derived deadline state:
+
+- A borrower can fund a `Created` agreement strictly before the handover deadline. The app simulates the call, sends the exact recorded deposit to the contract, estimates live gas, and checks the borrower's MON balance before submission.
+- An owner can explicitly attest that physical handover occurred and move a `Funded` agreement to `Active` strictly before the handover deadline.
+- At or after the handover deadline, the borrower can cancel a still-`Funded` agreement and recover the full recorded deposit.
+
+Every lifecycle transaction displays the submitted hash, waits for a successful receipt, and then verifies the expected status from live contract state before reporting confirmation. Wallet rejection, simulation failure, revert, RPC failure, and post-receipt verification failure remain distinct states.
+
+Agreement creation from Phase 2 remains available. An authenticated owner with an active EVM wallet can open `/create` and record a new agreement on Monad Testnet. The form validates the item metadata URI, distinct owner/borrower/arbiter addresses, positive MON deposit, future deadlines, and positive inspection and claim-response periods. Local date and time inputs are converted to Unix seconds, and the MON value is converted to wei without floating-point arithmetic.
 
 The transaction flow is entirely live:
 
@@ -33,6 +43,15 @@ The transaction flow is entirely live:
 6. `/agreements/[agreementId]` reads `getAgreement` directly from the deployed contract and displays only the returned onchain data.
 
 Success is never inferred from `totalAgreementCount`, and the app does not substitute a mock agreement when an RPC or contract read fails.
+
+## Phase 3 live smoke test
+
+A manual Monad Testnet smoke test verified agreement `#1` for **Cordless Drill** with a `0.25 MON` deposit. The owner was `0x6d5f11D97f483E42a4Af58669d4798A8946a9308`, the borrower was `0x32F251fc36A1174901124589EAC2d4E391816F69`, and the deployed contract was `0x663024D51C495Ad64E5CCD319F22Ad929916b69E`.
+
+- `Created` → `Funded`: `fundAgreement` succeeded with exactly `0.25 MON` sent to the contract. [View the transaction on MonadVision](https://testnet.monadvision.com/tx/0x66d67147be627a77bc0388a9a795d851bd58467bed902612c5c6dac8d9853c4a).
+- `Funded` → `Active`: `confirmHandover` succeeded with `0 MON`. [View the transaction on MonadVision](https://testnet.monadvision.com/tx/0x0bd0751d61747c6092d07699436ceaa4dfaf3b85e0e83cd63b9bd19ffa07cb9b).
+
+The expired failed-handover refund was not part of this manual smoke test.
 
 ## Technology stack
 
@@ -97,6 +116,6 @@ forge test --gas-report
 
 ## Current limitations
 
-Phase 2 implements agreement creation and live, read-only agreement details only. Metadata upload is not included, so owners must provide a real accessible HTTPS, HTTP, or IPFS URI. Deposit funding, handover, return, claims, disputes, settlement, and all other agreement lifecycle actions are not implemented in the application yet.
+Phase 3 implements agreement creation, role-based discovery, deposit funding, handover confirmation, and the expired unhanded-agreement refund. Metadata upload is not included, so owners must provide a real accessible HTTPS, HTTP, or IPFS URI. Return requests, successful-return confirmation, damage claims, disputes, arbitration, and later settlement paths are not implemented in the application yet.
 
-There is no backend, database, or indexer. Signing in does not send an onchain transaction; only an explicit, simulated create-agreement confirmation can submit a write.
+There is no backend, database, or indexer. Signing in and reading agreements do not send transactions. Only an explicit, simulated create, fund, handover, or failed-handover refund action can submit a write. Manual Monad Testnet verification currently covers funding and handover confirmation; the expired failed-handover refund remains manually unverified.

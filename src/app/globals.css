@@ -536,6 +536,201 @@ button {
   gap: 28px;
 }
 
+.dashboard-content {
+  width: 100%;
+}
+
+.agreement-discovery {
+  margin-top: 30px;
+  padding: clamp(24px, 4vw, 42px);
+  border: 1px solid var(--line);
+  background: var(--paper-light);
+  box-shadow: 8px 8px 0 var(--paper-deep);
+}
+
+.discovery-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 26px;
+  border-bottom: 2px solid var(--ink);
+}
+
+.discovery-heading h2,
+.discovery-state h2,
+.lifecycle-action-panel h2 {
+  margin: 8px 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.discovery-heading > div > p:last-child,
+.discovery-state p:not(.eyebrow),
+.lifecycle-action-panel p {
+  margin: 12px 0 0;
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+.discovery-state {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 16px;
+}
+
+.discovery-state > svg {
+  color: var(--warning);
+}
+
+.discovery-state .loading-mark {
+  width: 25px;
+  height: 25px;
+}
+
+.discovery-state .text-button {
+  margin-top: 14px;
+}
+
+.agreement-card-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 26px;
+}
+
+.agreement-card {
+  min-width: 0;
+  padding: 22px;
+  border: 1px solid var(--line);
+  background: #fffdf8;
+}
+
+.agreement-card-topline,
+.agreement-card-links {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.agreement-card-topline > span:first-child {
+  color: var(--ink-soft);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.agreement-card h3 {
+  margin: 20px 0 0;
+  overflow-wrap: anywhere;
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+}
+
+.agreement-card dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 19px 0 0;
+  border-block: 1px dashed var(--line);
+}
+
+.agreement-card dl > div {
+  min-width: 0;
+  padding: 14px 8px 14px 0;
+}
+
+.agreement-card dl > div + div {
+  padding-left: 14px;
+  border-left: 1px solid var(--line);
+}
+
+.agreement-card dt {
+  color: var(--ink-soft);
+  font-size: 0.68rem;
+}
+
+.agreement-card dd {
+  margin: 6px 0 0;
+  overflow-wrap: anywhere;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.agreement-card-deadline {
+  margin: 15px 0 0;
+  color: var(--ink-soft);
+  font-size: 0.72rem;
+}
+
+.agreement-card-links {
+  align-items: flex-end;
+  margin-top: 18px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.agreement-card-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--safety-dark);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.lifecycle-action-panel {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 14px;
+  margin-top: 28px;
+  padding: 22px;
+  border: 1px solid var(--safety);
+  background: var(--safety-pale);
+}
+
+.lifecycle-action-panel > svg {
+  color: var(--safety-dark);
+}
+
+.lifecycle-action-panel h2 {
+  font-size: 2rem;
+}
+
+.action-balance {
+  font-family: var(--font-geist-mono), monospace;
+  font-weight: 700;
+}
+
+.handover-confirmation {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 13px;
+  border: 1px solid var(--line);
+  background: #fffdf8;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.handover-confirmation input {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  accent-color: var(--safety-dark);
+}
+
+.lifecycle-submit {
+  width: 100%;
+  margin-top: 18px;
+}
+
 .wallet-panel,
 .contract-slip,
 .signin-sheet {
@@ -1543,6 +1738,17 @@ button {
   .panel-heading {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .discovery-heading,
+  .agreement-card-topline,
+  .agreement-card-links {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .agreement-card-list {
+    grid-template-columns: 1fr;
   }
 
   .live-read-grid {

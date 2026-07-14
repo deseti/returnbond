@@ -2,7 +2,12 @@
 
 `ReturnBond` escrows a native MON security deposit for a peer-to-peer physical item lending agreement. Each agreement is independent, names one owner, one borrower, and one neutral arbiter, and follows a fixed state machine. The contract has no administrator, fees, upgrade mechanism, generic withdrawal, `receive`, or `fallback` function.
 
-No ReturnBond contract has been deployed yet, so this repository intentionally contains no contract address.
+## Monad Testnet deployment
+
+- **Address:** [`0x663024D51C495Ad64E5CCD319F22Ad929916b69E`](https://testnet.monadvision.com/address/0x663024D51C495Ad64E5CCD319F22Ad929916b69E)
+- **Deployment transaction:** [`0x7b33d53cb614fb07ab8e82d0b2cc9d6432fec7ecf12b79c5aa03d33da4ae59c1`](https://testnet.monadvision.com/tx/0x7b33d53cb614fb07ab8e82d0b2cc9d6432fec7ecf12b79c5aa03d33da4ae59c1)
+- **Network:** Monad Testnet (`10143`)
+- **Verification:** Source code verified on MonadVision
 
 ## Roles
 

@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Foundry dependencies and generated artifacts are not frontend source.
+    "contracts/lib/**",
+    "contracts/cache/**",
+    "contracts/out/**",
+    "contracts/broadcast/**",
   ]),
 ]);
 

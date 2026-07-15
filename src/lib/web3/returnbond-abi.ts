@@ -96,6 +96,59 @@ export const returnBondAbi = [
   },
   {
     type: "function",
+    name: "raiseDamageClaim",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "agreementId", type: "uint256" },
+      { name: "claimAmount", type: "uint256" },
+      { name: "claimEvidenceURI", type: "string" },
+    ],
+    outputs: [],
+  },
+  {
+    type: "function",
+    name: "raiseOverdueClaim",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "agreementId", type: "uint256" },
+      { name: "claimAmount", type: "uint256" },
+      { name: "claimEvidenceURI", type: "string" },
+    ],
+    outputs: [],
+  },
+  {
+    type: "function",
+    name: "acceptClaim",
+    stateMutability: "nonpayable",
+    inputs: [{ name: "agreementId", type: "uint256" }],
+    outputs: [],
+  },
+  {
+    type: "function",
+    name: "disputeClaim",
+    stateMutability: "nonpayable",
+    inputs: [{ name: "agreementId", type: "uint256" }],
+    outputs: [],
+  },
+  {
+    type: "function",
+    name: "finalizeUnansweredClaim",
+    stateMutability: "nonpayable",
+    inputs: [{ name: "agreementId", type: "uint256" }],
+    outputs: [],
+  },
+  {
+    type: "function",
+    name: "resolveDispute",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "agreementId", type: "uint256" },
+      { name: "ownerAward", type: "uint256" },
+    ],
+    outputs: [],
+  },
+  {
+    type: "function",
     name: "getOwnerAgreementIds",
     stateMutability: "view",
     inputs: [{ name: "owner", type: "address" }],
@@ -190,6 +243,66 @@ export const returnBondAbi = [
     ],
   },
   {
+    type: "event",
+    name: "ClaimRaised",
+    anonymous: false,
+    inputs: [
+      { name: "agreementId", type: "uint256", indexed: true },
+      { name: "owner", type: "address", indexed: true },
+      { name: "claimAmount", type: "uint256", indexed: false },
+      { name: "claimEvidenceURI", type: "string", indexed: false },
+      { name: "overdue", type: "bool", indexed: false },
+      { name: "claimCreationTimestamp", type: "uint64", indexed: false },
+    ],
+  },
+  {
+    type: "event",
+    name: "ClaimDisputed",
+    anonymous: false,
+    inputs: [
+      { name: "agreementId", type: "uint256", indexed: true },
+      { name: "borrower", type: "address", indexed: true },
+      { name: "arbiter", type: "address", indexed: true },
+    ],
+  },
+  {
+    type: "event",
+    name: "ClaimAccepted",
+    anonymous: false,
+    inputs: [
+      { name: "agreementId", type: "uint256", indexed: true },
+      { name: "borrower", type: "address", indexed: true },
+      { name: "owner", type: "address", indexed: true },
+      { name: "ownerAward", type: "uint256", indexed: false },
+      { name: "borrowerRefund", type: "uint256", indexed: false },
+    ],
+  },
+  {
+    type: "event",
+    name: "ClaimFinalized",
+    anonymous: false,
+    inputs: [
+      { name: "agreementId", type: "uint256", indexed: true },
+      { name: "owner", type: "address", indexed: true },
+      { name: "borrower", type: "address", indexed: true },
+      { name: "ownerAward", type: "uint256", indexed: false },
+      { name: "borrowerRefund", type: "uint256", indexed: false },
+    ],
+  },
+  {
+    type: "event",
+    name: "DisputeResolved",
+    anonymous: false,
+    inputs: [
+      { name: "agreementId", type: "uint256", indexed: true },
+      { name: "arbiter", type: "address", indexed: true },
+      { name: "owner", type: "address", indexed: true },
+      { name: "borrower", type: "address", indexed: false },
+      { name: "ownerAward", type: "uint256", indexed: false },
+      { name: "borrowerRefund", type: "uint256", indexed: false },
+    ],
+  },
+  {
     type: "error",
     name: "AgreementNotFound",
     inputs: [{ name: "agreementId", type: "uint256" }],
@@ -204,6 +317,7 @@ export const returnBondAbi = [
   { type: "error", name: "EmptyItemName", inputs: [] },
   { type: "error", name: "EmptyMetadataURI", inputs: [] },
   { type: "error", name: "EmptyReturnProofURI", inputs: [] },
+  { type: "error", name: "EmptyClaimEvidenceURI", inputs: [] },
   {
     type: "error",
     name: "Unauthorized",
@@ -243,6 +357,14 @@ export const returnBondAbi = [
     inputs: [
       { name: "agreementId", type: "uint256" },
       { name: "deadline", type: "uint256" },
+    ],
+  },
+  {
+    type: "error",
+    name: "InvalidClaimAmount",
+    inputs: [
+      { name: "claimAmount", type: "uint256" },
+      { name: "depositAmount", type: "uint256" },
     ],
   },
   {

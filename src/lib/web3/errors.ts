@@ -9,11 +9,13 @@ const RETURNBOND_ERROR_MESSAGES: Record<string, string> = {
   EmptyItemName: "Enter an item name.",
   EmptyMetadataURI: "Enter a metadata URI.",
   EmptyReturnProofURI: "Enter a return-proof URI.",
+  EmptyClaimEvidenceURI: "Enter a claim-evidence URI.",
   Unauthorized: "The connected wallet is not authorized for this agreement action.",
   InvalidStatus: "The agreement state changed and this action is no longer available.",
   IncorrectDeposit: "The transaction value must exactly match the recorded deposit.",
   DeadlineExpired: "The contract action deadline has already been reached.",
   DeadlineNotReached: "The contract action deadline has not been reached yet.",
+  InvalidClaimAmount: "The claim or owner award is outside the allowed deposit range.",
   NativeTransferFailed: "The contract could not return the deposit to the borrower wallet.",
 };
 

@@ -14,6 +14,7 @@ import { formatEther } from "viem";
 import { useConnection, useReadContract, useSwitchChain } from "wagmi";
 import { monadTestnet } from "@/config/monad-testnet";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { AgreementClaimActions } from "@/features/agreements/agreement-claim-actions";
 import { AgreementLifecycleActions } from "@/features/agreements/agreement-lifecycle-actions";
 import { AgreementReturnActions } from "@/features/agreements/agreement-return-actions";
 import {
@@ -179,6 +180,7 @@ function AgreementRecord({
 }) {
   const metadataLink = getSafeMetadataLink(agreement.itemMetadataURI);
   const returnProofLink = getSafeMetadataLink(agreement.returnProofURI);
+  const claimEvidenceLink = getSafeMetadataLink(agreement.claimEvidenceURI);
   const status = getAgreementStatusLabel(agreement.status);
   const statusTone = agreement.status === 0 ? "neutral" : agreement.status >= 6 ? "warning" : "positive";
 
@@ -245,6 +247,23 @@ function AgreementRecord({
               </dd>
             </div>
           )}
+          {agreement.claimEvidenceURI && (
+            <div className="data-wide">
+              <dt>Claim-evidence URI</dt>
+              <dd className="breakable-value">
+                {claimEvidenceLink ? (
+                  <a href={claimEvidenceLink} target="_blank" rel="noreferrer">
+                    {agreement.claimEvidenceURI}
+                    <ArrowUpRight aria-hidden="true" size={15} />
+                  </a>
+                ) : (
+                  <span title="The onchain value is not a safe HTTP, HTTPS, or IPFS link">
+                    {agreement.claimEvidenceURI}
+                  </span>
+                )}
+              </dd>
+            </div>
+          )}
           <div>
             <dt>Handover deadline</dt>
             <dd><OnchainTime seconds={agreement.handoverDeadline} /></dd>
@@ -267,12 +286,40 @@ function AgreementRecord({
               <dd><OnchainTime seconds={agreement.returnRequestTimestamp} /></dd>
             </div>
           )}
+          {agreement.claimCreationTimestamp > ZERO && (
+            <>
+              <div>
+                <dt>Claim amount</dt>
+                <dd>{formatDeposit(agreement.claimAmount)}</dd>
+              </div>
+              <div>
+                <dt>Claim / dispute status</dt>
+                <dd>{status}</dd>
+              </div>
+              <div>
+                <dt>Claim created</dt>
+                <dd><OnchainTime seconds={agreement.claimCreationTimestamp} /></dd>
+              </div>
+              <div>
+                <dt>Claim-response deadline</dt>
+                <dd><OnchainTime seconds={agreement.claimCreationTimestamp + agreement.claimResponsePeriod} /></dd>
+              </div>
+              <div className="data-wide participant-assertion-note">
+                <dt>Evidence limitation</dt>
+                <dd>The evidence URI and physical claim are participant assertions. ReturnBond does not independently verify their contents or the item&apos;s condition.</dd>
+              </div>
+            </>
+          )}
         </dl>
         <AgreementLifecycleActions
           agreement={agreement}
           onAgreementChanged={onAgreementChanged}
         />
         <AgreementReturnActions
+          agreement={agreement}
+          onAgreementChanged={onAgreementChanged}
+        />
+        <AgreementClaimActions
           agreement={agreement}
           onAgreementChanged={onAgreementChanged}
         />
@@ -286,7 +333,7 @@ function AgreementRecord({
           <RoleRow label="Borrower" address={agreement.borrower} />
           <RoleRow label="Arbiter" address={agreement.arbiter} />
         </dl>
-        <p className="receipt-note">Eligible lifecycle actions appear only for the connected owner or borrower and are checked against live contract state and chain time.</p>
+        <p className="receipt-note">Eligible lifecycle actions appear only for the connected owner, borrower, or arbiter and are checked against live contract state and chain time.</p>
       </aside>
     </div>
   );

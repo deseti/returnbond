@@ -118,7 +118,7 @@ export function useAgreementReturnActions({
       return;
     }
 
-    setTransaction({ stage: "estimating" });
+    setTransaction({ stage: "simulating" });
     if (!publicClient || !wallet.writeAddress || !wallet.walletClient) {
       setTransaction({
         stage: "rpc-error",
@@ -151,6 +151,7 @@ export function useAgreementReturnActions({
           functionName: "requestReturn",
           args,
         });
+        setTransaction({ stage: "estimating" });
         await publicClient.estimateContractGas({
           account: writeAddress,
           ...returnBondContract,
@@ -166,6 +167,7 @@ export function useAgreementReturnActions({
           functionName: "confirmSuccessfulReturn",
           args,
         });
+        setTransaction({ stage: "estimating" });
         await publicClient.estimateContractGas({
           account: writeAddress,
           ...returnBondContract,
@@ -181,6 +183,7 @@ export function useAgreementReturnActions({
           functionName: "finalizeUnansweredReturn",
           args,
         });
+        setTransaction({ stage: "estimating" });
         await publicClient.estimateContractGas({
           account: writeAddress,
           ...returnBondContract,

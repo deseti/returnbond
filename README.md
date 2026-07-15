@@ -19,6 +19,29 @@ ReturnBond records the loan roles and deadlines in a smart contract. The borrowe
 - The Solidity contract stores agreement state and escrows native MON deposits.
 - Application blockchain data comes directly from the deployed contract and the configured Monad Testnet RPC. The application does not substitute mock data when live reads fail.
 
+## Phase 5: claims and dispute resolution
+
+The live agreement route now supports the deployed contract's complete claim lifecycle. The owner can raise a damage claim during the strict pre-deadline inspection window or an overdue claim at or after the return deadline. Claim amounts remain bigint values from input through contract submission, must be greater than zero and no more than the deposit, and use a trimmed HTTPS, HTTP, or IPFS evidence URI.
+
+Before the chain-derived claim-response deadline, the borrower can review the exact owner award and borrower refund and either accept the claim or dispute it. At or after that exact deadline, the owner can finalize an unanswered claim with the same recorded split. A dispute gives only the recorded arbiter the ability to award the owner any amount from zero through the full deposit; the borrower refund is calculated as the exact bigint remainder.
+
+Every Phase 5 action requires the synchronized Privy/Wagmi signer on Monad Testnet, simulates and estimates its nonpayable zero-MON call before wallet confirmation, verifies every relevant field in the expected receipt event, and then verifies the resulting live agreement state before reporting success. Payout actions also refresh discovery and both participant balances. Transaction evidence remains visible after a successful state transition removes the action.
+
+Claim evidence URIs and physical claims are participant assertions stored onchain. ReturnBond does not upload or independently verify their contents, the item condition, or whether an item is overdue. Manual Phase 5 verification is limited to the damage-claim, borrower-dispute, and partial arbiter-resolution path documented below.
+
+## Phase 5 live smoke test
+
+A manual Monad Testnet smoke test verified the disputed-damage-claim path for agreement `#2`, **Portable Projector**, with a `1 MON` deposit. The owner was `0x6d5f11D97f483E42a4Af58669d4798A8946a9308`, the borrower was `0x32F251fc36A1174901124589EAC2d4E391816F69`, the arbiter was `0x48d3eF068e43a7ce548d929Ae5af0F2134487c62`, and the deployed contract was `0x663024D51C495Ad64E5CCD319F22Ad929916b69E`.
+
+- `Created` → `Funded`: `fundAgreement` succeeded with exactly `1 MON` sent to the contract. [View the transaction on MonadVision](https://testnet.monadvision.com/tx/0x64c7c0b102045e2ef9bde85cd41a22f916f9cbc8e4a65f1279c62b4aa18a19d6).
+- `Funded` → `Active`: `confirmHandover` succeeded. [View the transaction on MonadVision](https://testnet.monadvision.com/tx/0x6c2596872c204a0ff844e7174a11f538f5403c18b9e4a69b89c3311053a82326).
+- `Active` → `ReturnRequested`: `requestReturn` succeeded. [View the transaction on MonadVision](https://testnet.monadvision.com/tx/0x469f209fecaeb1ae0dcde802d9ca20bfbb001b6b7fa06fc907fcdcc209eb18cd3).
+- `ReturnRequested` → `ClaimRequested`: the owner used `raiseDamageClaim` before the inspection deadline for exactly `0.4 MON`. The claim-evidence URI was stored onchain, but its contents were not independently verified. [View the transaction on MonadVision](https://testnet.monadvision.com/tx/0x839f2e69a11b014533271c1abc1ea4225359f40991a81759556d36d2236f26f8).
+- `ClaimRequested` → `Disputed`: the borrower used `disputeClaim` before the claim-response deadline. [View the transaction on MonadVision](https://testnet.monadvision.com/tx/0x0dea9057787fd1487e05edbd63422c4aca1364ec48fec372b7e3799ad0cf0a4f).
+- `Disputed` → `Claimed`: the arbiter used `resolveDispute` with a `0.25 MON` owner award and exact `0.75 MON` borrower refund. The transaction sent `0 MON` value excluding gas, and MonadVision showed the two exact internal payouts. [View the transaction on MonadVision](https://testnet.monadvision.com/tx/0x2539aa47fb0c98a795abf1aff4b630551ef99a6c8f1b5250638bed7eba8cc733).
+
+Agreement `#2` finished with the live status `Claimed`. Transaction evidence remained visible after every state transition. This smoke test did not cover `raiseOverdueClaim`, `acceptClaim`, `finalizeUnansweredClaim`, or zero/full arbiter awards.
+
 ## Phase 4: return and deposit refund
 
 The live agreement route extends the Phase 3 lifecycle with the contract's real successful-return paths:
@@ -135,6 +158,6 @@ forge test --gas-report
 
 ## Current limitations
 
-Phase 4 implements agreement creation, role-based discovery, deposit funding, handover confirmation, the expired unhanded-agreement refund, return requests, owner-confirmed successful returns, and timed-out unanswered-return refunds. Metadata and proof upload are not included, so participants must provide a real accessible HTTPS, HTTP, or IPFS URI. Damage claims, overdue claims, disputes, arbitration, and later claim settlement paths are not implemented in the application yet.
+Phase 5 implements agreement creation, role-based discovery, deposit funding, handover confirmation, the expired unhanded-agreement refund, return requests, owner-confirmed successful returns, timed-out unanswered-return refunds, damage and overdue claims, borrower acceptance or dispute, unanswered-claim finalization, and arbiter dispute resolution. Metadata and evidence upload are not included, so participants must provide a real accessible HTTPS, HTTP, or IPFS URI.
 
-There is no backend, database, or indexer. Signing in and reading agreements do not send transactions. Only an explicit, simulated lifecycle action can submit a write after manual wallet approval. Manual Monad Testnet verification covers funding, handover confirmation, a return request, and owner-confirmed successful-return refund. The expired failed-handover refund and `finalizeUnansweredReturn` remain manually untested.
+There is no backend, database, or indexer. Signing in and reading agreements do not send transactions. Only an explicit, simulated lifecycle action can submit a write after manual wallet approval. Manual Monad Testnet verification covers funding, handover confirmation, return requests, an owner-confirmed successful-return refund, a damage claim, a borrower dispute, and a partial arbiter resolution. The expired failed-handover refund, `finalizeUnansweredReturn`, `raiseOverdueClaim`, `acceptClaim`, `finalizeUnansweredClaim`, and zero/full arbiter awards remain manually untested.

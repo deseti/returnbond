@@ -120,7 +120,7 @@ export function AgreementLifecycleActions({
   async function executeAction() {
     if (!action || pending) return;
     setTransactionAction(action);
-    setTransaction({ stage: "estimating" });
+    setTransaction({ stage: "simulating" });
 
     if (!publicClient || !wallet.writeAddress || !wallet.walletClient) {
       const message = wallet.signerMismatch
@@ -170,6 +170,7 @@ export function AgreementLifecycleActions({
       }
 
       if (action === "fund") {
+        setTransaction({ stage: "estimating" });
         const [gas, gasPrice, liveBalance] = await Promise.all([
           publicClient.estimateContractGas({
             account: writeAddress,

@@ -5,7 +5,7 @@ import type { Hash } from "viem";
 import { getTransactionExplorerUrl } from "@/lib/web3/contract";
 
 export type TransactionState =
-  | { stage: "idle" | "estimating" | "awaiting-confirmation" }
+  | { stage: "idle" | "simulating" | "estimating" | "awaiting-confirmation" }
   | { stage: "submitted" | "confirming" | "confirmed"; hash: Hash }
   | {
       stage: "rejected" | "reverted" | "simulation-error" | "rpc-error" | "verification-error";
@@ -15,7 +15,7 @@ export type TransactionState =
     };
 
 export function isTransactionPending(state: TransactionState): boolean {
-  return ["estimating", "awaiting-confirmation", "submitted", "confirming"].includes(state.stage);
+  return ["simulating", "estimating", "awaiting-confirmation", "submitted", "confirming"].includes(state.stage);
 }
 
 export function TransactionStatus({ state }: { state: TransactionState }) {
@@ -23,7 +23,8 @@ export function TransactionStatus({ state }: { state: TransactionState }) {
   const pending = isTransactionPending(state);
   const failed = ["rejected", "reverted", "simulation-error", "rpc-error", "verification-error"].includes(state.stage);
   const labels: Record<Exclude<TransactionState["stage"], "idle">, string> = {
-    estimating: "Simulating contract call and estimating gas",
+    simulating: "Simulating contract call",
+    estimating: "Estimating transaction gas",
     "awaiting-confirmation": "Awaiting wallet confirmation",
     submitted: "Transaction submitted",
     confirming: "Waiting for onchain confirmation",

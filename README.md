@@ -2,6 +2,8 @@
 
 ReturnBond is a mobile-first application for peer-to-peer physical item lending. It gives an owner, borrower, and neutral arbiter a shared agreement while a native MON security deposit is held by an onchain contract.
 
+**Production application:** [https://returnbond.vercel.app](https://returnbond.vercel.app)
+
 ## The practical problem
 
 Everyday loans between friends, neighbors, or community members often depend on awkward conversations about deposits, damage, and return dates. Giving the deposit directly to the owner creates another trust problem: the borrower has to trust that it will be returned fairly.
@@ -18,6 +20,19 @@ ReturnBond records the loan roles and deadlines in a smart contract. The borrowe
 - TanStack Query manages live RPC query state.
 - The Solidity contract stores agreement state and escrows native MON deposits.
 - Application blockchain data comes directly from the deployed contract and the configured Monad Testnet RPC. The application does not substitute mock data when live reads fail.
+
+## Production deployment smoke test
+
+The production application at [returnbond.vercel.app](https://returnbond.vercel.app) was smoke-tested successfully with live Monad Testnet data. Verification covered:
+
+- Authentication and wallet connection.
+- Monad Testnet detection.
+- Deployed ReturnBond contract bytecode availability.
+- The connected wallet's live native MON balance.
+- Live role-based agreement discovery.
+- Agreement `#1` with the final live status `Refunded`.
+- Agreement `#2` with the final live status `Claimed`.
+- Failure-closed behavior with no static fallback blockchain data.
 
 ## Phase 5: claims and dispute resolution
 

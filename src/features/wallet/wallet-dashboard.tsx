@@ -325,8 +325,9 @@ export function WalletDashboard() {
           <ArrowUpRight aria-hidden="true" size={16} />
         </a>
         <p className="slip-note">
-          Phase 3 adds live role-based discovery, borrower funding, owner handover
-          confirmation, and failed-handover refunds.
+          Discover every live agreement tied to your wallet and complete its
+          role-authorized lifecycle—from deposit funding and handover through
+          returns, refunds, claims, disputes, and arbiter resolution.
         </p>
       </aside>
     </div>

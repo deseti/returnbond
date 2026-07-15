@@ -819,7 +819,7 @@ export function CreateAgreementForm() {
             <li><span>3</span><div><strong>Confirm</strong><p>Your wallet submits only after your explicit approval.</p></div></li>
           </ol>
           <div className="receipt-rule" />
-          <p className="receipt-note">No deposit is transferred during creation. Funding is not available in Phase 2.</p>
+          <p className="receipt-note">No deposit is transferred during creation. The recorded borrower funds it later through the live agreement.</p>
         </aside>
       </div>
     </main>

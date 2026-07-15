@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "ReturnBond — Safer everyday item loans",
-    template: "%s — ReturnBond",
+    default: "ReturnBond  Safer everyday item loans",
+    template: "%s  ReturnBond",
   },
   description:
     "Protect everyday item loans with a clear onchain security deposit on Monad Testnet.",

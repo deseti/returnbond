@@ -23,7 +23,7 @@ export function TransactionStatus({ state }: { state: TransactionState }) {
   const pending = isTransactionPending(state);
   const failed = ["rejected", "reverted", "simulation-error", "rpc-error", "verification-error"].includes(state.stage);
   const labels: Record<Exclude<TransactionState["stage"], "idle">, string> = {
-    estimating: "Checking balance and estimating gas",
+    estimating: "Simulating contract call and estimating gas",
     "awaiting-confirmation": "Awaiting wallet confirmation",
     submitted: "Transaction submitted",
     confirming: "Waiting for onchain confirmation",

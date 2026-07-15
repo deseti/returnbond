@@ -72,6 +72,30 @@ export const returnBondAbi = [
   },
   {
     type: "function",
+    name: "requestReturn",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "agreementId", type: "uint256" },
+      { name: "returnProofURI", type: "string" },
+    ],
+    outputs: [],
+  },
+  {
+    type: "function",
+    name: "confirmSuccessfulReturn",
+    stateMutability: "nonpayable",
+    inputs: [{ name: "agreementId", type: "uint256" }],
+    outputs: [],
+  },
+  {
+    type: "function",
+    name: "finalizeUnansweredReturn",
+    stateMutability: "nonpayable",
+    inputs: [{ name: "agreementId", type: "uint256" }],
+    outputs: [],
+  },
+  {
+    type: "function",
     name: "getOwnerAgreementIds",
     stateMutability: "view",
     inputs: [{ name: "owner", type: "address" }],
@@ -143,6 +167,29 @@ export const returnBondAbi = [
     ],
   },
   {
+    type: "event",
+    name: "ReturnRequested",
+    anonymous: false,
+    inputs: [
+      { name: "agreementId", type: "uint256", indexed: true },
+      { name: "borrower", type: "address", indexed: true },
+      { name: "returnProofURI", type: "string", indexed: false },
+      { name: "returnRequestTimestamp", type: "uint64", indexed: false },
+    ],
+  },
+  {
+    type: "event",
+    name: "ReturnConfirmed",
+    anonymous: false,
+    inputs: [
+      { name: "agreementId", type: "uint256", indexed: true },
+      { name: "actor", type: "address", indexed: true },
+      { name: "borrower", type: "address", indexed: true },
+      { name: "refundedAmount", type: "uint256", indexed: false },
+      { name: "timedOut", type: "bool", indexed: false },
+    ],
+  },
+  {
     type: "error",
     name: "AgreementNotFound",
     inputs: [{ name: "agreementId", type: "uint256" }],
@@ -156,6 +203,7 @@ export const returnBondAbi = [
   { type: "error", name: "ZeroClaimResponsePeriod", inputs: [] },
   { type: "error", name: "EmptyItemName", inputs: [] },
   { type: "error", name: "EmptyMetadataURI", inputs: [] },
+  { type: "error", name: "EmptyReturnProofURI", inputs: [] },
   {
     type: "error",
     name: "Unauthorized",

@@ -15,6 +15,7 @@ import { useConnection, useReadContract, useSwitchChain } from "wagmi";
 import { monadTestnet } from "@/config/monad-testnet";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { AgreementLifecycleActions } from "@/features/agreements/agreement-lifecycle-actions";
+import { AgreementReturnActions } from "@/features/agreements/agreement-return-actions";
 import {
   getAgreementStatusLabel,
   getSafeMetadataLink,
@@ -177,6 +178,7 @@ function AgreementRecord({
   onAgreementChanged: () => Promise<void>;
 }) {
   const metadataLink = getSafeMetadataLink(agreement.itemMetadataURI);
+  const returnProofLink = getSafeMetadataLink(agreement.returnProofURI);
   const status = getAgreementStatusLabel(agreement.status);
   const statusTone = agreement.status === 0 ? "neutral" : agreement.status >= 6 ? "warning" : "positive";
 
@@ -226,6 +228,23 @@ function AgreementRecord({
               )}
             </dd>
           </div>
+          {agreement.returnProofURI && (
+            <div className="data-wide">
+              <dt>Return-proof URI</dt>
+              <dd className="breakable-value">
+                {returnProofLink ? (
+                  <a href={returnProofLink} target="_blank" rel="noreferrer">
+                    {agreement.returnProofURI}
+                    <ArrowUpRight aria-hidden="true" size={15} />
+                  </a>
+                ) : (
+                  <span title="The onchain value is not a safe HTTP, HTTPS, or IPFS link">
+                    {agreement.returnProofURI}
+                  </span>
+                )}
+              </dd>
+            </div>
+          )}
           <div>
             <dt>Handover deadline</dt>
             <dd><OnchainTime seconds={agreement.handoverDeadline} /></dd>
@@ -242,8 +261,18 @@ function AgreementRecord({
             <dt>Claim response period</dt>
             <dd>{formatPeriod(agreement.claimResponsePeriod)}</dd>
           </div>
+          {agreement.returnRequestTimestamp > ZERO && (
+            <div>
+              <dt>Return requested</dt>
+              <dd><OnchainTime seconds={agreement.returnRequestTimestamp} /></dd>
+            </div>
+          )}
         </dl>
         <AgreementLifecycleActions
+          agreement={agreement}
+          onAgreementChanged={onAgreementChanged}
+        />
+        <AgreementReturnActions
           agreement={agreement}
           onAgreementChanged={onAgreementChanged}
         />
@@ -257,7 +286,7 @@ function AgreementRecord({
           <RoleRow label="Borrower" address={agreement.borrower} />
           <RoleRow label="Arbiter" address={agreement.arbiter} />
         </dl>
-        <p className="receipt-note">Eligible Phase 3 actions appear only for the connected owner or borrower and are checked against live contract state.</p>
+        <p className="receipt-note">Eligible lifecycle actions appear only for the connected owner or borrower and are checked against live contract state and chain time.</p>
       </aside>
     </div>
   );

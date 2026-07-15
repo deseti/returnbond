@@ -706,7 +706,7 @@ button {
   font-weight: 700;
 }
 
-.handover-confirmation {
+.action-confirmation {
   display: flex;
   align-items: flex-start;
   gap: 10px;
@@ -719,7 +719,7 @@ button {
   line-height: 1.45;
 }
 
-.handover-confirmation input {
+.action-confirmation input {
   width: 18px;
   height: 18px;
   flex: none;
@@ -729,6 +729,21 @@ button {
 .lifecycle-submit {
   width: 100%;
   margin-top: 18px;
+}
+
+.return-proof-form {
+  margin-top: 14px;
+}
+
+.return-proof-form .form-field {
+  margin-top: 18px;
+}
+
+.chain-deadline {
+  margin-top: 14px !important;
+  padding-left: 12px;
+  border-left: 3px solid var(--safety-dark);
+  font-size: 0.78rem;
 }
 
 .wallet-panel,

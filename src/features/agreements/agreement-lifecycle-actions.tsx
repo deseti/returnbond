@@ -269,7 +269,7 @@ export function AgreementLifecycleActions({
           <p className="action-balance">Live wallet balance: {balance.isSuccess ? `${formatEther(balance.data.value)} MON` : balance.isError ? "RPC read failed" : "Loading…"}</p>
         )}
         {action === "handover" && (
-          <label className="handover-confirmation">
+          <label className="action-confirmation">
             <input type="checkbox" checked={handoverConfirmed} disabled={pending} onChange={(event) => setHandoverConfirmed(event.target.checked)} />
             I confirm that I physically handed this item to the borrower.
           </label>

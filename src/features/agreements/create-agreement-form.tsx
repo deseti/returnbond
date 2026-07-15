@@ -32,6 +32,7 @@ import {
 } from "wagmi";
 import { z } from "zod";
 import { monadTestnet } from "@/config/monad-testnet";
+import { isSafeExternalUri } from "@/lib/web3/agreement";
 import {
   getTransactionExplorerUrl,
   returnBondContract,
@@ -115,16 +116,6 @@ function normalizeWalletAddress(value?: string): Address | undefined {
   }
 }
 
-function validMetadataUri(value: string): boolean {
-  if (value.startsWith("ipfs://")) return value.length > "ipfs://".length;
-  try {
-    const url = new URL(value);
-    return url.protocol === "https:" || url.protocol === "http:";
-  } catch {
-    return false;
-  }
-}
-
 function createAgreementSchema(owner?: Address) {
   const requiredAddress = z
     .string()
@@ -143,7 +134,7 @@ function createAgreementSchema(owner?: Address) {
         .trim()
         .min(1, "Enter a metadata URI.")
         .refine(
-          validMetadataUri,
+          isSafeExternalUri,
           "Use a valid HTTPS, HTTP, or IPFS URI.",
         ),
       borrower: requiredAddress,

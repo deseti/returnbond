@@ -47,6 +47,16 @@ export function getAgreementStatusLabel(status: number): string {
   return AGREEMENT_STATUS_LABELS[status] ?? `Unknown (${status})`;
 }
 
+export function isSafeExternalUri(value: string): boolean {
+  if (value.startsWith("ipfs://")) return value.length > "ipfs://".length;
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" || url.protocol === "http:";
+  } catch {
+    return false;
+  }
+}
+
 export function getSafeMetadataLink(uri: string): string | undefined {
   try {
     const url = new URL(uri);
@@ -64,4 +74,3 @@ export function getSafeMetadataLink(uri: string): string | undefined {
 
   return undefined;
 }
-
